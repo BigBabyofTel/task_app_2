@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN ["bun install", "bun install drizzle-orm @neondatabase/serverless"]
+RUN bun install
 
-ENV [DATABASE_URL = process.env.DATABASE_URL ]
+ENV DATABASE_URL=process.env.DATABASE_URL
 
 EXPOSE 3000
 
