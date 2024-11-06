@@ -5,13 +5,9 @@ import {
   getTokens,
   verifyAccount,
 } from "../controllers/auth_controllers";
-import { getJWT, getRefJWT } from "../services/authService";
-import { validateUser, type User } from "../utils/utils";
-import { set, ZodError } from "zod";
-import { getCookie, setCookie } from "hono/cookie";
-import { createMiddleware } from "hono/factory";
-import { verify } from "hono/jwt";
-import { accessToken } from "../config/db";
+import { type User } from "../utils/utils";
+import { ZodError } from "zod";
+import { setCookie } from "hono/cookie";
 import type { JWTPayload } from "hono/utils/jwt/types";
 import { authenticateToken } from "../middleware/middleware";
 
@@ -47,11 +43,13 @@ authRoute.post("/login", async (c) => {
     //verify
     const tokens: { access_token: string; refresh_token: string } | void =
       await getTokens(user).then((res) => {
+      
         return res;
       });
     // await as an object with two strings
     const access_token = tokens?.access_token as string;
     const refresh_token = tokens?.refresh_token as string;
+    
     //add age for cookies
     setCookie(c, "access_token", access_token, {
       path: "/",
@@ -69,6 +67,13 @@ authRoute.post("/login", async (c) => {
     console.log(error);
   }
 });
+
+authRoute.post('refresh', async (c) => {
+try {
+  c 
+} catch (error) {
+    console.log(error)
+}})
 
 authRoute.use("/dashboard", authenticateToken);
 

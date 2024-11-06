@@ -36,15 +36,12 @@ export async function getRefJWT(username: string | void) {
 }
 
 
-export async function authenticateToken(token: string | void) {
-    const authToken = await verify(
-        token as string,
-        Bun.env.ACCESS_TOKEN_SECRET,
-        "HS256"
-      )
-
-      authToken ? console.log('token is verified') : console.log('token is not verified');
-      return authToken;
+export async function verifyToken(token: string | void) {
+    const currentToken = token as string;
+    
+    const decodedPayload = await verify(currentToken, Bun.env.ACCESS_TOKEN_SECRET)
+    console.log(decodedPayload)
+    return;
 }
 
 

@@ -1,8 +1,10 @@
 import { insertUserSchema, userSchema, usersTable } from "../models/schema";
 import { db } from "../config/db";
-import { getJWT, hashCheck, hasing } from "../services/authService";
+import { getJWT, getRefJWT, hashCheck, hasing } from "../services/authService";
 import { validateUser, type User } from "../utils/utils";
 import { setCookie } from "hono/cookie";
+import type { Context } from "hono";
+import { verify } from "hono/jwt";
 
 //inputs username and password into the database after validating and hashing
 export async function createtUserData({ username, password }: User) {
@@ -61,9 +63,21 @@ export async function getTokens(
       return console.log("Password not found");
     } else {
       const access_token = await getJWT(user.username);
-      const refresh_token = await getJWT(user.username);
+      const refresh_token = await getRefJWT(user.username);
       return { access_token, refresh_token };
     }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function checkRefresh(c: Context) {
+  try {
+    const refreshtoken = c.req.header("Authorization")?.split("")[1];
+
+    !refreshtoken
+      ? c.json("The token is expired or missinng")
+      : c.json("The token is valid");
   } catch (error) {
     console.log(error);
   }

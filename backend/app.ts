@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
-import { authRoute, dashboardRoute } from "./routes/auth_routes";
-import { loginRoute } from "./routes/login_routes";
+import { authRoute } from "./routes/auth_routes";
+
 
 import { prettyJSON } from "hono/pretty-json";
 import { cors } from "hono/cors";
@@ -23,7 +23,6 @@ app.use('/*', cors({
 
 //group routes go here
 app.route("/", authRoute);
-app.route("/", loginRoute);
-app.route("/", dashboardRoute);
+
 
 export default app;
