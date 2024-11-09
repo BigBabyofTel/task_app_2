@@ -2,14 +2,14 @@
 import { Hono } from "hono";
 import {
   createtUserData,
-  getTokens,
+  getNewAccessToken,
   verifyAccount,
 } from "../controllers/auth_controllers";
 import { type User } from "../utils/utils";
 import { ZodError } from "zod";
-import { setCookie } from "hono/cookie";
 import type { JWTPayload } from "hono/utils/jwt/types";
 import { authenticateToken } from "../middleware/middleware";
+import { verify } from "hono/jwt";
 
 export type Variables = {
   access_token: string;
@@ -39,41 +39,39 @@ authRoute.post("/signup", async (c) => {
 authRoute.post("/login", async (c) => {
   try {
     const { username, password } = await c.req.json();
+    //change so that users doesnt log the username or password
     const user = await verifyAccount(username, password);
-    //verify
-    const tokens: { access_token: string; refresh_token: string } | void =
-      await getTokens(user).then((res) => {
-      
-        return res;
-      });
-    // await as an object with two strings
-    const access_token = tokens?.access_token as string;
-    const refresh_token = tokens?.refresh_token as string;
-    
-    //add age for cookies
-    setCookie(c, "access_token", access_token, {
-      path: "/",
-      httpOnly: true,
-      maxAge: 60 * 60 * 1, // 1 hour
-    });
-    setCookie(c, "refresh_token", refresh_token, {
-      path: "/",
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 2, //2 days
-    });
-    c.redirect("/dashboard");
-    return c.json({ message: "user found" }, 201);
+    console.log(user);
+    return c.json(user);
   } catch (error) {
     console.log(error);
   }
 });
 
-authRoute.post('refresh', async (c) => {
-try {
-  c 
-} catch (error) {
-    console.log(error)
-}})
+authRoute.post("/refresh", async (c) => {
+  try {
+    const refreshToken = c.req.header("Authorization");
+    
+    // Verify the refresh token
+    const verifiedToken = await verify(
+      refreshToken as string,
+      Bun.env.REFRESH_TOKEN_SECRET
+    );
+
+    if (verifiedToken) { // Correct the condition
+      // Issue a new access token
+      const newAccessToken = await getNewAccessToken(refreshToken);
+      return c.json({ access_token: newAccessToken }); 
+    } else {
+      // Handle invalid refresh token
+      return c.json({ message: 'Invalid refresh token' }, 401); // Unauthorized
+    }
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    return c.json({ message: 'Failed to refresh token' }, 500); // Internal Server Error
+  }
+});
+
 
 authRoute.use("/dashboard", authenticateToken);
 

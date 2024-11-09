@@ -3,9 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch run index.ts",
-    "build": "bun build index.ts",
-    "start": "bun run index.ts",
+    "dev": "bun --watch run /backend/index.ts",
+    "build": "bun build /backend/index.ts",
+    "start": "bun run /backend/index.ts",
     "db-mig": "bunx drizzle-kit migrate --config ./backend/config/drizzle.config.ts",
     "db-gen": "bunx drizzle-kit generate --config ./backend/config/drizzle.config.ts"
   },

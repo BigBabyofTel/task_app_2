@@ -1,13 +1,5 @@
-import { password } from "bun";
-import {
-  pgTable,
-  varchar,
-  serial,
-  timestamp,
-  text,
-  integer,
-  primaryKey,
-} from "drizzle-orm/pg-core";
+
+import { pgTable, serial, timestamp, text } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -25,5 +17,5 @@ export const userSchema = z.object({
 
 export const insertUserSchema = createInsertSchema(usersTable, {
   username: (schema) => schema.username.min(3).max(255),
-  password: (schema) => schema.password.min(8).max(255)
-})
+  password: (schema) => schema.password.min(8).max(255),
+});

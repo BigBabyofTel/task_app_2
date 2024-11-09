@@ -44,4 +44,15 @@ export async function verifyToken(token: string | void) {
     return;
 }
 
+export async function getNewAccessToken(token: string | void) {
+    const decodedToken = await verify(token as string, Bun.env.REFRESH_TOKEN_SECRET);
+    
+    if (!decodedToken) {
+        throw new Error('Invalid token')
+    } else {
+        const new_access_token = await getJWT(decodedToken.username as string);
+        return new_access_token;
+    }
+}
+
 
