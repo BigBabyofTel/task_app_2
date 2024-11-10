@@ -12,21 +12,18 @@ function RootComponent() {
       <div className="p-2 flex gap-2 text-lg">
         <Link
           to="/"
-          activeProps={{
-            className: 'font-bold',
-          }}
-          activeOptions={{ exact: true }}
         >
           Home
         </Link>{' '}
         <Link
-          to="/about"
-          activeProps={{
-            className: 'font-bold',
-          }}
+          to="/signup"
         >
-          About
-        </Link>
+          Sign Up
+        </Link>{' '}
+        <Link
+        to='/login'
+        >
+        Log In</Link>
       </div>
       <hr />
       <Outlet />
