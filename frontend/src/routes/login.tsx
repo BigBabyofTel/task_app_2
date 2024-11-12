@@ -1,11 +1,11 @@
-import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { userSchema } from "../../schema/schema";
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { api } from "../lib/api";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
@@ -14,7 +14,6 @@ export const Route = createFileRoute("/login")({
 type User = z.infer<typeof userSchema>;
 
 function RouteComponent() {
-  const navigate = useNavigate();
   const form = useForm({
     validatorAdapter: zodValidator(),
     defaultValues: {
@@ -26,20 +25,24 @@ function RouteComponent() {
 
       console.log(formData);
       try {
-        const response = await fetch("", {
-          method: "Post",
-          headers: {
-            "Content-Type": "application/json",
+        //needs to collect user name
+        const loginData = {
+          json: {
+            username: formData.value.username,
+            password: formData.value.password,
           },
-          body: JSON.stringify(formData),
+        };
+        const res = await api.auth.login.$post(loginData, {
+          headers: {
+            "Content-Type": "application/json", 
+            "X-User-Agent": "hc",
+            "Access-Control-Allow-Origin": "/*",
+          },
         });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        //navigate('/')
+        
+        console.log(res);
       } catch (error) {
-        console.log(error);
+        console.log(error, ZodError);
       }
     },
     validators: {
@@ -63,8 +66,7 @@ function RouteComponent() {
             <form.Field
               name="username"
               validators={{
-                onChange: z
-                  .string(),
+                onChange: z.string(),
                 onChangeAsyncDebounceMs: 500,
                 onChangeAsync: z.string().refine(
                   async (value) => {
@@ -101,9 +103,7 @@ function RouteComponent() {
             <form.Field
               name="password"
               validators={{
-                onChange: z
-                  .string()
-                 ,
+                onChange: z.string(),
                 onChangeAsyncDebounceMs: 500,
                 onChangeAsync: z.string().refine(
                   async (value) => {
