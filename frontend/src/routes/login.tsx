@@ -1,11 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z, ZodError } from "zod";
-import { userSchema } from "../../schema/schema";
+import { userSchema } from "../schema/schema";
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { api } from "../lib/api";
+import { setCookie } from "../utils/utils";
+import { useNavigate } from "@tanstack/react-router";
+import { authenticate } from "../services/auth";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
@@ -14,6 +17,8 @@ export const Route = createFileRoute("/login")({
 type User = z.infer<typeof userSchema>;
 
 function RouteComponent() {
+  const navigate = useNavigate({ from: "/login" });
+
   const form = useForm({
     validatorAdapter: zodValidator(),
     defaultValues: {
@@ -32,17 +37,23 @@ function RouteComponent() {
             password: formData.value.password,
           },
         };
-        const res = await api.auth.login.$post(loginData, {
-          headers: {
-            "Content-Type": "application/json", 
-            "X-User-Agent": "hc",
-            "Access-Control-Allow-Origin": "/*",
-          },
-        });
-        
-        console.log(res);
+        const res = await api.auth.login
+          .$post(loginData, {
+            headers: {
+              "Content-Type": "application/json",
+              "X-User-Agent": "hc",
+              "Access-Control-Allow-Origin": "/*",
+            },
+          })
+          .then(async (res) => {
+            const isAuth = authenticate(res);
+            const token = await isAuth ? true : false;
+            token
+            ? navigate({ to: "/dashboard" })
+            : navigate({ to: "/signup" })
+          });
       } catch (error) {
-        console.log(error, ZodError);
+        console.error(error, ZodError);
       }
     },
     validators: {

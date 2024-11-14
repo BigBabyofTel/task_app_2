@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
-import { authRoute} from "./routes/auth_routes";
+import { authRoute } from "./routes/auth_routes";
 
 import { prettyJSON } from "hono/pretty-json";
 import { cors } from "hono/cors";
@@ -22,7 +22,12 @@ app.use(
     ],
     credentials: true,
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    exposeHeaders: ["Content-Length", "Access-Control-Allow-Origin"],
+    exposeHeaders: [
+      "Content-Length",
+      "Access-Control-Allow-Origin",
+      "Authorization",
+      "Refresher",
+    ],
     maxAge: 3600,
   })
 );

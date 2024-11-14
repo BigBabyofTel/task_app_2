@@ -13,6 +13,7 @@ import { verify } from "hono/jwt";
 import { zValidator } from "@hono/zod-validator";
 import { userSchema } from "../models/schema";
 import { cors } from "hono/cors";
+import type { Token } from "typescript";
 
 export type Variables = {
   access_token: string;
@@ -26,7 +27,7 @@ export const authRoute = new Hono<{ Variables: Variables }>()
   .basePath("/auth")
   .post("/signup", zValidator("json", userSchema), async (c) => {
     try {
-      const { username, password }: User = await c.req.valid("json");
+      const { username, password }: User = c.req.valid("json");
       createtUserData({
         username: username,
         password: password,
@@ -43,8 +44,10 @@ export const authRoute = new Hono<{ Variables: Variables }>()
       const { username, password } = await c.req.json();
       //change so that users doesnt log the username or password
       const user = await verifyAccount(username, password);
-      c.header("Authorization", user?.refresh_token);
-      return c.json(user);
+      if (user == undefined) throw new Error(`user not found`);
+      c.res.headers.set("Authorization", user?.access_token as string);
+      c.res.headers.set("Refresher", user?.refresh_token as string);
+      return c.json(`Access Granted`, 200);
     } catch (error) {
       console.log(error);
     }
