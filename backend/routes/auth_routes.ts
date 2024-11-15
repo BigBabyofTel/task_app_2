@@ -34,7 +34,6 @@ export const authRoute = new Hono<{ Variables: Variables }>()
       });
 
       c.json({ message: "User registered successfully" }, 201);
-      c.redirect("/verify");
     } catch (error: unknown) {
       console.log(ZodError, error);
     }
@@ -54,7 +53,7 @@ export const authRoute = new Hono<{ Variables: Variables }>()
   })
   .post("/refresh", async (c) => {
     try {
-      const refreshToken = c.req.header("Authorization");
+      const refreshToken = c.req.header("Refresher");
 
       // Verify the refresh token
       const verifiedToken = await verify(

@@ -13,6 +13,7 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.60.1",
     "@tanstack/router-plugin": "^1.79.0",
+    "@types/node": "^22.9.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
@@ -22,7 +23,10 @@
     "vite": "^5.4.11"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-form": "^0.34.4",
     "@tanstack/react-query": "^5.59.20",
     "@tanstack/react-router": "^1.81.4",

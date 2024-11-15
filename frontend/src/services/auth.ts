@@ -1,7 +1,5 @@
 //functions for authentication
-
 import { setCookie } from "../utils/utils";
-import { redirect, useNavigate } from "@tanstack/react-router";
 
 export async function authenticate(response: Response) {
   const token = response.headers.get("authorization") as string;

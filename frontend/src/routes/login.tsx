@@ -3,12 +3,11 @@ import { z, ZodError } from "zod";
 import { userSchema } from "../schema/schema";
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
-import { api } from "../lib/api";
-import { setCookie } from "../utils/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api";
 import { useNavigate } from "@tanstack/react-router";
-import { authenticate } from "../services/auth";
+import { authenticate } from "@/services/auth";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
@@ -27,8 +26,6 @@ function RouteComponent() {
     } as User,
     onSubmit: async (formData) => {
       //send to the backend
-
-      console.log(formData);
       try {
         //needs to collect user name
         const loginData = {
