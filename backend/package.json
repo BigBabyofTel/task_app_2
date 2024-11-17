@@ -4,10 +4,16 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch run ../backend/index.ts",
-    "build": "bun build ../backend/index.ts",
-    "start": "bun run /backend/index.ts",
-    "db-mig": "bunx drizzle-kit migrate --config ../backend/config/drizzle.config.ts",
-    "db-gen": "bunx drizzle-kit generate --config ../backend/config/drizzle.config.ts"
+    "build": "bun build --target bun index.ts",
+    "start": "bun run ../backend/index.ts",
+    "db-mig": "bunx drizzle-kit migrate --config */drizzle.config.ts",
+    "db-gen": "bunx drizzle-kit generate --config */drizzle.config.ts",
+    "db-push": "bunx drizzle-kit push --config */drizzle.config.ts"
+  },
+  "bun": {
+    "targets": [
+      "bun"
+    ]
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -4,7 +4,6 @@ import { authRoute } from "./routes/auth_routes";
 
 import { prettyJSON } from "hono/pretty-json";
 import { cors } from "hono/cors";
-import { hc } from "hono/client";
 
 const app = new Hono();
 
@@ -12,7 +11,7 @@ app.use(logger());
 app.use(prettyJSON());
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: ["http://localhost:5173", "http://localhost:3001"],
     allowHeaders: [
       "Content-Type",
       "Authorization",
@@ -32,6 +31,9 @@ app.use(
   })
 );
 
+app.get("/", (c) => {
+  return c.json({ message: "Hello Docker!!" });
+});
 app.route("/", authRoute);
 
 export default app;

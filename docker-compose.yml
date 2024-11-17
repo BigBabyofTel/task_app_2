@@ -1,0 +1,46 @@
+name: task-app-2
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend
+    volumes:
+      - task_app_front_volume:/var/lib/postgresql/data
+    networks:
+      - task-app-2
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
+    volumes:
+      - task_app_back_volume:/var/lib/postgresql/data
+    networks:
+      - task-app-2
+  db:
+    image: postgres
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${DB_PORT}
+    volumes:
+      - task_app_db_volume:/var/lib/postgresql/data
+    networks:
+      - task-app-2
+volumes:
+  task_app_db_volume:
+  task_app_back_volume:
+  task_app_front_volume:
+networks:
+  task-app-2:
